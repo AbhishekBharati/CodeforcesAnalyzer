@@ -1,0 +1,63 @@
+.container {
+  width: 350px; /* Increased from 320px to prevent cutting */
+  padding: 1.5rem;
+  background-color: #16171d;
+  color: #f3f4f6;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-size: 1.25rem;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.input-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+input {
+  flex: 1;
+  min-width: 0; /* Essential: allows input to shrink instead of pushing the button out */
+  padding: 0.6rem;
+  background-color: #1f2028;
+  border: 1px solid #2e303a;
+  border-radius: 6px;
+  color: #f3f4f6;
+  font-size: 0.9rem;
+}
+
+input:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+button {
+  flex-shrink: 0; /* Prevents the button from being squeezed */
+  white-space: nowrap; /* Ensures the text "Analyze" stays on one line */
+  padding: 0.6rem 1.2rem;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+.status {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-align: center;
+}
