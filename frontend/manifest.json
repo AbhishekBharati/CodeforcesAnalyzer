@@ -9,6 +9,6 @@
     "service_worker": "src/background.ts",
     "type": "module"
   },
-  "permissions": ["storage", "alarms"],
+  "permissions": ["storage", "alarms", "notifications"],
   "host_permissions": ["http://localhost:8080/*"]
 }
