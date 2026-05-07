@@ -20,4 +20,5 @@ public class UserAnalysis {
     private Object rawSubmissions;
     private String status; // PENDING, PROCESSING, COMPLETED, ERROR
     private String aiRecommendation;
+    private Object topicMetrics;
 }
