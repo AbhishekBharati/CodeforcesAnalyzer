@@ -4,6 +4,7 @@ import com.CodeforcesAnalyzer.Worker.config.RabbitMQConfig;
 import com.CodeforcesAnalyzer.Worker.model.UserAnalysis;
 import com.CodeforcesAnalyzer.Worker.repository.UserAnalysisRepository;
 import com.CodeforcesAnalyzer.Worker.service.AnalysisAggregator;
+import com.CodeforcesAnalyzer.Worker.service.OpenAIService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class AnalysisConsumer {
 
     private final UserAnalysisRepository repository;
     private final AnalysisAggregator aggregator;
+    private final OpenAIService aiService;
 
-    public AnalysisConsumer(UserAnalysisRepository repository, AnalysisAggregator aggregator) {
+    public AnalysisConsumer(UserAnalysisRepository repository, AnalysisAggregator aggregator, OpenAIService aiService) {
         this.repository = repository;
         this.aggregator = aggregator;
+        this.aiService = aiService;
     }
 
     @RabbitListener(queues = RabbitMQConfig.QUEUE)
@@ -43,16 +46,17 @@ public class AnalysisConsumer {
             log.info("WORKER: Calculating detailed metrics for {}...", handle);
             Map<String, Object> metrics = aggregator.aggregateMetrics(analysis.getRawSubmissions());
             
-            // For now, we store the raw metrics map as a JSON string in the recommendation field
-            // to verify the structure before sending to AI.
-            String metricsJson = new com.fasterxml.jackson.databind.ObjectMapper()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(metrics);
+            // Save metrics to DB so frontend can show a dashboard
+            analysis.setTopicMetrics(metrics);
+            repository.save(analysis);
 
-            analysis.setAiRecommendation(metricsJson);
+            log.info("WORKER: Calling OpenAI for {}...", handle);
+            String aiRoadmap = aiService.generateRoadmap(handle, metrics);
+
+            analysis.setAiRecommendation(aiRoadmap);
             analysis.setStatus("COMPLETED");
             repository.save(analysis);
-            log.info("WORKER: Completed detailed analysis for handle: {}", handle);
+            log.info("WORKER: Completed analysis with AI for handle: {}", handle);
 
         } catch (Exception e) {
             log.error("WORKER: Error during analysis for {}: {}", handle, e.getMessage());
