@@ -4,6 +4,8 @@ import com.CodeforcesAnalyzer.Backend.model.UserAnalysis;
 import com.CodeforcesAnalyzer.Backend.service.CodeforcesService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,15 +20,23 @@ public class CodeforcesController {
         this.codeforcesService = codeforcesService;
     }
 
-    @GetMapping("/user-status")
-    public UserAnalysis getUserStatus(@RequestParam String handle) {
-        long startTime = System.currentTimeMillis();
-        log.info("REST: Received request for handle: {}", handle);
+    @PostMapping("/analyze")
+    public ResponseEntity<UserAnalysis> startAnalysis(@RequestParam String handle) {
+        log.info("REST: Received analysis request for handle: {}", handle);
+        UserAnalysis result = codeforcesService.processUserAnalysisRequest(handle);
         
-        UserAnalysis result = codeforcesService.getUserStatus(handle);
+        if ("COMPLETED".equals(result.getStatus())) {
+            return ResponseEntity.ok(result);
+        }
         
-        long duration = System.currentTimeMillis() - startTime;
-        log.info("REST: Completed request for handle: {} in {}ms", handle, duration);
-        return result;
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(result);
+    }
+
+    @GetMapping("/status/{handle}")
+    public ResponseEntity<UserAnalysis> getStatus(@PathVariable String handle) {
+        log.info("REST: Checking status for handle: {}", handle);
+        // We can reuse the same service logic or add a dedicated light-weight check
+        UserAnalysis result = codeforcesService.processUserAnalysisRequest(handle);
+        return ResponseEntity.ok(result);
     }
 }
