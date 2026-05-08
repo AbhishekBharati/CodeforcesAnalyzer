@@ -4,7 +4,7 @@
 
 ---
 
-## 🚀 Key Features
+## Key Features
 
 - **Asynchronous Data Ingestion:** Handles massive (3MB+) Codeforces submission payloads without blocking the UI using the **HTTP 202 Accepted** pattern.
 - **Distributed "Brain" Architecture:** Separates data collection from heavy AI processing using **RabbitMQ**, ensuring the system scales horizontally.
@@ -15,7 +15,7 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project is built using a **Tier-1 Distributed Microservices** pattern:
 
@@ -38,7 +38,7 @@ The project is built using a **Tier-1 Distributed Microservices** pattern:
 
 ---
 
-## 🚦 Getting Started
+## Getting Started
 
 ### Prerequisites
 - Docker & Docker Compose
@@ -81,7 +81,7 @@ npm run build
 
 ---
 
-## 🧪 Testing the Flow
+## Testing the Flow
 1. Open the extension and enter a handle (e.g., `tourist`).
 2. Click **Analyze**.
 3. You will receive a notification (or see the UI update) once the AI has finished its analysis.
